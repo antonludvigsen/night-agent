@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Samtaler | Night Agent</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <span class="brand">Night Agent</span>
+    <nav>
+      <a href="/conversations.html">Samtaler</a>
+      <a href="/hotel-info.html">Hotelviden</a>
+      <a href="/stats.html">Drift</a>
+    </nav>
+  </header>
+  <main>
+    <h1>Samtaler</h1>
+    <div class="filters">
+      <button data-status="">Alle</button>
+      <button data-status="needs_human">Kræver menneske</button>
+      <button data-status="ai">Besvaret af AI</button>
+      <button data-status="closed">Lukket</button>
+    </div>
+    <ul id="conversation-list"></ul>
+  </main>
+  <script src="/scripts/conversations.js"></script>
+</body>
+</html>

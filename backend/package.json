@@ -1,0 +1,18 @@
+{
+  "name": "night-agent-backend",
+  "version": "0.1.0",
+  "description": "Webhooks, dashboard API and worker for Night Agent",
+  "main": "app.js",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
+    "worker": "node ../worker/worker.js",
+    "db:init": "node data/init.js"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}

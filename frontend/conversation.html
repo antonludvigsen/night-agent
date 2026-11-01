@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Samtale | Night Agent</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <span class="brand">Night Agent</span>
+    <nav>
+      <a href="/conversations.html">Samtaler</a>
+      <a href="/hotel-info.html">Hotelviden</a>
+      <a href="/stats.html">Drift</a>
+    </nav>
+  </header>
+  <main>
+    <h1>Samtale</h1>
+    <section id="messages"></section>
+    <div class="actions">
+      <button id="take-over">Overtag</button>
+      <button id="close">Luk</button>
+    </div>
+    <form id="reply-form">
+      <textarea name="body" required></textarea>
+      <button type="submit">Send svar</button>
+    </form>
+  </main>
+  <script src="/scripts/conversation.js"></script>
+</body>
+</html>

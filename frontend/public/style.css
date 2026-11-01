@@ -1,0 +1,14 @@
+/* Dashboard styles. Phase 2. */
+:root {
+  --ok: #2e7d32;
+  --alert: #c62828;
+  --muted: #9e9e9e;
+}
+body { font-family: system-ui, sans-serif; margin: 0; }
+.topbar { display: flex; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid #ddd; }
+.topbar nav a { margin-left: 16px; }
+main { max-width: 960px; margin: 0 auto; padding: 24px; }
+.error { color: var(--alert); }
+.status-ai { color: var(--ok); }
+.status-needs_human { color: var(--alert); }
+.status-closed { color: var(--muted); }
