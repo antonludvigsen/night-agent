@@ -1,6 +1,9 @@
 -- Fictional hotel for development and demo. All data is invented.
 INSERT OR IGNORE INTO hotels (id, name, sms_number, whatsapp_number)
-VALUES (1, 'Hotel Nordlys', '+4593709060', '+14155238886'); -- Twilio SMS number and WhatsApp sandbox
+VALUES (1, 'Hotel CBS', '+4593709060', '+14155238886'); -- Twilio SMS number and WhatsApp sandbox
+
+-- Rename for databases created before the hotel was called Hotel CBS (seed uses INSERT OR IGNORE).
+UPDATE hotels SET name = 'Hotel CBS' WHERE id = 1 AND name = 'Hotel Nordlys';
 
 INSERT OR IGNORE INTO hotel_info (hotel_id, key, text, approved_by) VALUES
 (1, 'reception_hours', 'The reception is staffed from 07:00 to 22:00 every day.', 'seed'),
