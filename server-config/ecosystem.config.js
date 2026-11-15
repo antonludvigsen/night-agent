@@ -19,6 +19,7 @@ module.exports = {
       cwd: root,
       script: path.join(root, 'worker', 'worker.js'),
       instances: 1,
+      exec_mode: 'fork',     // a single process; cluster mode is only for the web instances
     },
   ],
 };
