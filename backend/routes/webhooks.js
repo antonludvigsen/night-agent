@@ -4,6 +4,7 @@ const { getDb, withTransaction } = require('../data/database');
 const { encrypt, lookupHash } = require('../services/crypto');
 const { channelOf, numberOf } = require('../services/twilio');
 const twilioSignature = require('../middleware/twilioSignature');
+const validate = require('../middleware/validate');
 
 const router = express.Router();
 
@@ -15,11 +16,8 @@ const sendEmptyTwiml = (res) => res.type('text/xml').send(EMPTY_TWIML);
 // POST /webhooks/twilio/inbound
 // Stores the message and creates a job, then answers Twilio immediately with empty TwiML.
 // The AI call is not made here: the worker picks up the job (plan 6.2).
-router.post('/inbound', async (req, res) => {
-  const { From, To, Body = '', MessageSid } = req.body || {};
-  if (!From || !To || !MessageSid) {
-    return res.status(400).json({ error: 'From, To and MessageSid are required' });
-  }
+router.post('/inbound', validate.inboundWebhook, async (req, res) => {
+  const { From, To, Body = '', MessageSid } = req.body;
 
   const channel = channelOf(From);
   const guestNumber = numberOf(From);
@@ -91,11 +89,8 @@ router.post('/inbound', async (req, res) => {
 
 // POST /webhooks/twilio/status
 // Twilio reports the delivery status of an outbound message (queued, sent, delivered, failed ...).
-router.post('/status', async (req, res) => {
-  const { MessageSid, MessageStatus } = req.body || {};
-  if (!MessageSid || !MessageStatus) {
-    return res.status(400).json({ error: 'MessageSid and MessageStatus are required' });
-  }
+router.post('/status', validate.statusWebhook, async (req, res) => {
+  const { MessageSid, MessageStatus } = req.body;
   const db = await getDb();
   // Status callbacks can arrive out of order; a final status is never overwritten.
   await db.run(

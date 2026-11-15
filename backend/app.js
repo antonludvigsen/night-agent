@@ -16,6 +16,7 @@ const conversationRoutes = require('./routes/conversations');
 const hotelInfoRoutes = require('./routes/hotelInfo');
 const healthRoutes = require('./routes/health');
 const { requirePage } = require('./middleware/requireUser');
+const { webhookLimiter, apiLimiter } = require('./middleware/rateLimits');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -31,10 +32,10 @@ app.use(responseTime()); // X-Response-Time header on every response
 app.use(helmet());       // security headers, including HSTS
 app.use(morgan(config.env === 'production' ? 'combined' : 'dev'));
 app.use(cors({ origin: config.publicBaseUrl, credentials: true })); // dashboard is served from the same origin
-app.use(express.urlencoded({ extended: false })); // Twilio webhooks are form-encoded
-app.use(express.json());
+// Small body limits: no legitimate request is larger, and big bodies cost memory (availability).
+app.use(express.urlencoded({ extended: false, limit: '20kb' })); // Twilio webhooks are form-encoded
+app.use(express.json({ limit: '20kb' }));
 app.use(cookieParser()); // reads the login token from the cookie
-// TODO phase 3: express-rate-limit on the webhooks
 
 // Dashboard pages are only served to a logged-in user; otherwise redirect to the login page.
 // The data itself is protected on the API (requireUser); this is defence in depth.
@@ -46,10 +47,10 @@ for (const page of protectedPages) {
 // Public files: login page, CSS and scripts
 app.use(express.static(frontendDir));
 
-app.use('/webhooks/twilio', webhookRoutes);
+app.use('/webhooks/twilio', webhookLimiter, webhookRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/conversations', conversationRoutes);
-app.use('/api/hotel-info', hotelInfoRoutes);
+app.use('/api/conversations', apiLimiter, conversationRoutes);
+app.use('/api/hotel-info', apiLimiter, hotelInfoRoutes);
 app.use('/health', healthRoutes);
 
 app.use(notFound);
