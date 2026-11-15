@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS hotel_info (
   hotel_id    INTEGER NOT NULL REFERENCES hotels(id),
   key         TEXT NOT NULL,
   text        TEXT NOT NULL,
+  content_hash TEXT, -- SHA-256 of the approved text (integrity, plan 6.4)
   approved_by TEXT,
   updated_at  TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE (hotel_id, key)
@@ -37,7 +38,7 @@ CREATE TABLE IF NOT EXISTS messages (
   conversation_id INTEGER NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
   direction       TEXT NOT NULL CHECK (direction IN ('in', 'out')),
   author          TEXT NOT NULL CHECK (author IN ('guest', 'ai', 'staff')),
-  body            TEXT NOT NULL,
+  body_enc        TEXT NOT NULL, -- AES-256-CBC, iv:ciphertext in hex
   message_sid     TEXT,
   delivery_status TEXT,
   created_at      TEXT NOT NULL DEFAULT (datetime('now')),
@@ -59,10 +60,4 @@ CREATE TABLE IF NOT EXISTS staff_users (
   email         TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
   hotel_id      INTEGER NOT NULL REFERENCES hotels(id)
-);
-
-CREATE TABLE IF NOT EXISTS sessions (
-  sid     TEXT PRIMARY KEY,
-  sess    TEXT NOT NULL,
-  expires INTEGER NOT NULL
 );

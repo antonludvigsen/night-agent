@@ -37,7 +37,9 @@ Workeren genbruger `backend/config.js` og `backend/services/`, så alle npm-pakk
 cd backend
 npm install
 cp ../.env.example ../.env   # udfyld værdierne
+npm run keys                 # genererer DATA_ENCRYPTION_KEY og LOOKUP_SALT i .env (kun hvis de mangler)
 npm run db:init              # opretter tabeller og seed-data
+npm test                     # enhedstest af kryptering
 npm run dev                  # web på http://localhost:3000
 npm run worker               # i en ny terminal
 ```

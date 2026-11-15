@@ -1,18 +1,17 @@
-// Central configuration. Loads .env from the repo root (phase 1: npm install dotenv).
+// Central configuration. Loads .env from the repo root.
 // Used by both the web app and the worker.
 const path = require('path');
 
-try {
-  require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
-} catch {
-  // dotenv not installed yet (phase 0)
-}
+const repoRoot = path.join(__dirname, '..');
+require('dotenv').config({ path: path.join(repoRoot, '.env'), quiet: true });
 
 module.exports = {
   port: Number(process.env.PORT) || 3000,
   env: process.env.NODE_ENV || 'development',
   publicBaseUrl: process.env.PUBLIC_BASE_URL,
-  dbPath: process.env.DB_PATH || path.join(__dirname, 'data', 'night-agent.db'),
+  // DB_PATH is resolved from the repo root, so web app and worker open the same file
+  // no matter which directory they are started from.
+  dbPath: path.resolve(repoRoot, process.env.DB_PATH || './backend/data/night-agent.db'),
   twilio: {
     accountSid: process.env.TWILIO_ACCOUNT_SID,
     authToken: process.env.TWILIO_AUTH_TOKEN,
@@ -23,8 +22,8 @@ module.exports = {
     apiKey: process.env.AI_API_KEY,
     model: process.env.AI_MODEL || 'claude-sonnet-5-5',
   },
-  sessionSecret: process.env.SESSION_SECRET,
-  dataEncryptionKey: process.env.DATA_ENCRYPTION_KEY,
+  dataEncryptionKey: process.env.DATA_ENCRYPTION_KEY, // 32 bytes as hex (AES-256)
+  lookupSalt: process.env.LOOKUP_SALT,                // 16 bytes as hex
   smtp: {
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT) || 587,

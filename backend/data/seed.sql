@@ -1,6 +1,6 @@
 -- Fictional hotel for development and demo. All data is invented.
 INSERT OR IGNORE INTO hotels (id, name, sms_number, whatsapp_number)
-VALUES (1, 'Hotel Nordlys', NULL, NULL); -- numbers set when Twilio is configured
+VALUES (1, 'Hotel Nordlys', '+4593709060', '+14155238886'); -- Twilio SMS number and WhatsApp sandbox
 
 INSERT OR IGNORE INTO hotel_info (hotel_id, key, text, approved_by) VALUES
 (1, 'reception_hours', 'The reception is staffed from 07:00 to 22:00 every day.', 'seed'),

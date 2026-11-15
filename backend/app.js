@@ -2,6 +2,9 @@
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const responseTime = require('response-time');
 const config = require('./config');
 
 const webhookRoutes = require('./routes/webhooks');
@@ -17,10 +20,13 @@ const app = express();
 // Behind Nginx: trust X-Forwarded-Proto/Host so the Twilio signature URL matches (phase 1)
 app.set('trust proxy', 1);
 
-// TODO phase 1: helmet, morgan, response-time (Exercise 3)
-// TODO phase 2: cookie-parser, express-session with shared session store
-// TODO phase 3: express-rate-limit on /api/auth/login
-app.use(cors());
+// Middleware stack from Exercise 3
+app.use(responseTime()); // X-Response-Time header on every response
+app.use(helmet());       // security headers, including HSTS
+app.use(morgan(config.env === 'production' ? 'combined' : 'dev'));
+app.use(cors({ origin: config.publicBaseUrl, credentials: true })); // dashboard is served from the same origin
+// TODO phase 2: cookie-parser, JWT middleware (requireUser, requirePage)
+// TODO phase 3: express-rate-limit on /api/auth/login and the webhooks
 app.use(express.urlencoded({ extended: false })); // Twilio webhooks are form-encoded
 app.use(express.json());
 
