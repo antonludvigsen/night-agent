@@ -16,8 +16,13 @@ function getTransporter() {
       host: config.smtp.host,
       port: config.smtp.port,
       secure: config.smtp.port === 465, // port 465 = TLS from the start
-      requireTLS: true,                 // port 587 = STARTTLS; never send without TLS
+      requireTLS: true,                 // other ports = STARTTLS; never send without TLS
       auth: { user: config.smtp.user, pass: config.smtp.pass },
+      // Give up quickly if the SMTP server cannot be reached (e.g. a blocked port),
+      // instead of waiting for the default timeout of two minutes.
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
     });
   }
   return transporter;
@@ -31,7 +36,7 @@ async function notifyStaff({ conversationId }) {
   }
   const link = `${config.publicBaseUrl}/conversation.html?id=${conversationId}`;
   const info = await getTransporter().sendMail({
-    from: `Night Agent <${config.smtp.user}>`,
+    from: `Night Agent <${config.smtp.from}>`,
     to: config.smtp.staffAlertEmail,
     subject: 'Night Agent: en samtale kræver en medarbejder',
     text: `En gæst venter på svar fra en medarbejder.\n\nÅbn samtalen i dashboardet:\n${link}\n`,

@@ -40,13 +40,12 @@ async function handOverToStaff(db, conversation, guestNumber, reason) {
   await db.run("UPDATE conversations SET status = 'needs_human', updated_at = datetime('now') WHERE id = ?", conversation.id);
   await sendAndStore(db, conversation, guestNumber, 'ai', FALLBACK_TEXT);
   console.log(`Conversation ${conversation.id} needs a human: ${reason}`);
-  // The mail only carries a link to the dashboard. A mail that cannot be sent must not
-  // stop the job: the conversation is already red in the dashboard.
-  try {
-    await mail.notifyStaff({ conversationId: conversation.id });
-  } catch (err) {
+  // The mail only carries a link to the dashboard. It is sent without waiting for the
+  // SMTP server: a slow or unreachable mail server must not hold up the next guest's job,
+  // and the conversation is already red in the dashboard.
+  mail.notifyStaff({ conversationId: conversation.id }).catch((err) => {
     console.error(`Staff alert for conversation ${conversation.id} failed: ${err.message}`);
-  }
+  });
 }
 
 async function processJob(db, job) {

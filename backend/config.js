@@ -39,6 +39,9 @@ module.exports = {
     port: Number(process.env.SMTP_PORT) || 587,
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
+    // Sender address. With Gmail it is the account itself; with an SMTP relay the user is
+    // an API login, so the verified sender address is set separately.
+    from: process.env.SMTP_FROM || process.env.SMTP_USER,
     staffAlertEmail: process.env.STAFF_ALERT_EMAIL,
   },
 };
