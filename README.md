@@ -22,7 +22,7 @@ Twilio ──statusCallback──> Express
 |---|---|---|
 | `frontend/` | Dashboard: login, samtaler, én samtale, hotelviden, drift | 1, 3 |
 | `backend/routes/` | Webhooks, auth, samtaler, hotelviden, health | 3, 9 |
-| `backend/middleware/` | `requireUser`, `twilioSignature`, `errorHandler`, `notFound` | 3, 9, 11 |
+| `backend/middleware/` | `requireUser` og `requirePage` (JWT i cookie), `twilioSignature`, `errorHandler`, `notFound` | 3, 9, 10 |
 | `backend/services/` | Twilio, AI, mail, kryptering | 4, 9, 11 |
 | `backend/data/` | Database, `schema.sql`, `seed.sql` (fiktivt hotel) | 3 |
 | `worker/` | Henter jobs, kalder AI, sender svar | 5 |
@@ -38,11 +38,17 @@ cd backend
 npm install
 cp ../.env.example ../.env   # udfyld værdierne
 npm run keys                 # genererer DATA_ENCRYPTION_KEY og LOOKUP_SALT i .env (kun hvis de mangler)
+npm run jwt-keys             # RSA-nøglepar til login-tokens i keys/ (kun hvis de mangler)
 npm run db:init              # opretter tabeller og seed-data
-npm test                     # enhedstest af kryptering
+npm run user:create -- navn@eksempel.dk   # opretter en medarbejder (password skrives skjult, gemmes som bcrypt-hash)
+npm test                     # enhedstest af kryptering, bcrypt og JWT
 npm run dev                  # web på http://localhost:3000
 npm run worker               # i en ny terminal
 ```
+
+Dashboardet åbnes på `http://localhost:3000`. Mail til personalet kræver `SMTP_USER`, `SMTP_PASS` (Gmail App Password som i Øvelse 4) og `STAFF_ALERT_EMAIL` i `.env`.
+
+Lokal HTTPS med selvsigneret certifikat (Øvelse 10, opgave 4 og 5) er valgfrit: opret `privkey.pem` og `newcert.pem` med `openssl` i `keys/`, og sæt `HTTPS_KEY_PATH=./keys/privkey.pem` og `HTTPS_CERT_PATH=./keys/newcert.pem` i `.env`.
 
 ## Faser
 

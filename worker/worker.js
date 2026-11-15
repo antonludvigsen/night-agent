@@ -3,9 +3,10 @@
 // send the reply via Twilio on the same channel, or hand the conversation to staff.
 const config = require('../backend/config');
 const { getDb } = require('../backend/data/database');
-const { encrypt, decrypt } = require('../backend/services/crypto');
+const { encrypt, decrypt, contentHash } = require('../backend/services/crypto');
 const ai = require('../backend/services/ai');
 const twilio = require('../backend/services/twilio');
+const mail = require('../backend/services/mail');
 
 const POLL_INTERVAL_MS = 1000;
 const HISTORY_LIMIT = 10;
@@ -38,8 +39,14 @@ async function sendAndStore(db, conversation, guestNumber, author, text) {
 async function handOverToStaff(db, conversation, guestNumber, reason) {
   await db.run("UPDATE conversations SET status = 'needs_human', updated_at = datetime('now') WHERE id = ?", conversation.id);
   await sendAndStore(db, conversation, guestNumber, 'ai', FALLBACK_TEXT);
-  // TODO phase 2: mail.notifyStaff({ conversationId, reason }) with a link only, no guest data.
   console.log(`Conversation ${conversation.id} needs a human: ${reason}`);
+  // The mail only carries a link to the dashboard. A mail that cannot be sent must not
+  // stop the job: the conversation is already red in the dashboard.
+  try {
+    await mail.notifyStaff({ conversationId: conversation.id });
+  } catch (err) {
+    console.error(`Staff alert for conversation ${conversation.id} failed: ${err.message}`);
+  }
 }
 
 async function processJob(db, job) {
@@ -60,7 +67,18 @@ async function processJob(db, job) {
   // Number and text are only decrypted in memory, right before the AI call and the reply.
   const history = rows.reverse().map((row) => ({ author: row.author, body: decrypt(row.body_enc) }));
   const guestNumber = decrypt(conversation.guest_number_enc);
-  const hotelInfo = await db.all('SELECT key, text FROM hotel_info WHERE hotel_id = ? ORDER BY key', conversation.hotel_id);
+  const hotelInfo = await db.all(
+    'SELECT key, text, content_hash FROM hotel_info WHERE hotel_id = ? ORDER BY key', conversation.hotel_id
+  );
+
+  // Integrity at rest: a text whose SHA-256 no longer matches the fingerprint stored when
+  // staff approved it has been changed outside the dashboard. It is never given to the AI.
+  const tampered = hotelInfo.filter((row) => contentHash(row.text) !== row.content_hash);
+  if (tampered.length > 0) {
+    const keys = tampered.map((row) => row.key).join(', ');
+    await handOverToStaff(db, conversation, guestNumber, `hotel_info failed the integrity check: ${keys}`);
+    return `fallback sent (hotel_info changed outside the dashboard: ${keys})`;
+  }
 
   let reply;
   try {

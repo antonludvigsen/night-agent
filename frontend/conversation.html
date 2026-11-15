@@ -13,20 +13,28 @@
       <a href="/conversations.html">Samtaler</a>
       <a href="/hotel-info.html">Hotelviden</a>
       <a href="/stats.html">Drift</a>
+      <span id="user-label" class="muted"></span>
+      <button id="logout-btn" type="button">Log ud</button>
     </nav>
   </header>
   <main>
-    <h1>Samtale</h1>
+    <p><a href="/conversations.html">Tilbage til samtaler</a></p>
+    <h1 id="conversation-title">Samtale</h1>
+    <div id="conversation-meta" class="conversation-top"></div>
     <section id="messages"></section>
+    <p id="conversation-error" class="error" hidden></p>
     <div class="actions">
-      <button id="take-over">Overtag</button>
-      <button id="close">Luk</button>
+      <button id="take-over" type="button">Overtag</button>
+      <button id="hand-back" type="button">Giv tilbage til AI</button>
+      <button id="close" type="button">Luk</button>
+      <button id="delete" type="button" class="danger">Slet</button>
     </div>
     <form id="reply-form">
-      <textarea name="body" required></textarea>
+      <textarea name="body" maxlength="1000" placeholder="Skriv et svar til gæsten" required></textarea>
       <button type="submit">Send svar</button>
     </form>
   </main>
+  <script src="/scripts/common.js"></script>
   <script src="/scripts/conversation.js"></script>
 </body>
 </html>

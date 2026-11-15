@@ -24,8 +24,18 @@ module.exports = {
   },
   dataEncryptionKey: process.env.DATA_ENCRYPTION_KEY, // 32 bytes as hex (AES-256)
   lookupSalt: process.env.LOOKUP_SALT,                // 16 bytes as hex
+  jwt: {
+    // RSA key pair (PEM) for login tokens. Paths are resolved from the repo root.
+    privateKeyPath: path.resolve(repoRoot, process.env.JWT_PRIVATE_KEY_PATH || './keys/jwt-private.pem'),
+    publicKeyPath: path.resolve(repoRoot, process.env.JWT_PUBLIC_KEY_PATH || './keys/jwt-public.pem'),
+  },
+  https: {
+    // Only for local development with a self-signed certificate. On the droplet Nginx terminates TLS.
+    keyPath: process.env.HTTPS_KEY_PATH ? path.resolve(repoRoot, process.env.HTTPS_KEY_PATH) : null,
+    certPath: process.env.HTTPS_CERT_PATH ? path.resolve(repoRoot, process.env.HTTPS_CERT_PATH) : null,
+  },
   smtp: {
-    host: process.env.SMTP_HOST,
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: Number(process.env.SMTP_PORT) || 587,
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,

@@ -13,18 +13,22 @@
       <a href="/conversations.html">Samtaler</a>
       <a href="/hotel-info.html">Hotelviden</a>
       <a href="/stats.html">Drift</a>
+      <span id="user-label" class="muted"></span>
+      <button id="logout-btn" type="button">Log ud</button>
     </nav>
   </header>
   <main>
     <h1>Samtaler</h1>
     <div class="filters">
-      <button data-status="">Alle</button>
+      <button data-status="" class="active">Alle</button>
       <button data-status="needs_human">Kræver menneske</button>
       <button data-status="ai">Besvaret af AI</button>
       <button data-status="closed">Lukket</button>
     </div>
     <ul id="conversation-list"></ul>
+    <p id="conversation-empty" class="muted" hidden>Ingen samtaler.</p>
   </main>
+  <script src="/scripts/common.js"></script>
   <script src="/scripts/conversations.js"></script>
 </body>
 </html>

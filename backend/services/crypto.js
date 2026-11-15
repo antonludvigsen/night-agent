@@ -2,8 +2,13 @@
 // - encrypt/decrypt: symmetric encryption, AES-256-CBC (1-crypto/1-symmetric.js)
 // - lookupHash:      SHA-256 with a secret salt (1-crypto/3-hashing.js, 5-salt.js)
 // - contentHash:     SHA-256 message digest (1-crypto/3-hashing.js)
+// - hashPassword/verifyPassword: bcrypt with salt rounds (2-bcrypt/1-password.js)
+// - signToken/verifyToken: JWT signed with an RSA key pair, RS256 (3-jwt/3-asymmetric.js)
 // Used by both the web app and the worker.
 const crypto = require('crypto');
+const fs = require('fs');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const config = require('../config');
 
 const algorithm = 'aes-256-cbc';
@@ -52,4 +57,55 @@ function contentHash(text) {
   return crypto.createHash('sha256').update(String(text)).digest('hex');
 }
 
-module.exports = { encrypt, decrypt, lookupHash, contentHash };
+// Passwords are hashed, not encrypted: they never need to be read again.
+// bcrypt generates a unique salt per hash and stores it inside the hash.
+const saltRounds = 10;
+
+async function hashPassword(plainPassword) {
+  return bcrypt.hash(plainPassword, saltRounds);
+}
+
+async function verifyPassword(plainPassword, hashedPassword) {
+  return bcrypt.compare(plainPassword, hashedPassword);
+}
+
+// Login tokens. The private key signs (only the login route needs it),
+// the public key verifies (every instance behind the load balancer can do that
+// without a shared session store).
+const TOKEN_ISSUER = 'night-agent';
+const TOKEN_LIFETIME = '8h';
+const keys = {};
+
+function readKey(name, filePath) {
+  if (!keys[name]) {
+    try {
+      keys[name] = fs.readFileSync(filePath, 'utf8');
+    } catch {
+      throw new Error(`JWT ${name} key not found at ${filePath} (run: npm run jwt-keys)`);
+    }
+  }
+  return keys[name];
+}
+
+function signToken(payload, options = {}) {
+  return jwt.sign(payload, readKey('private', config.jwt.privateKeyPath), {
+    algorithm: 'RS256',
+    expiresIn: TOKEN_LIFETIME,
+    issuer: TOKEN_ISSUER,
+    ...options,
+  });
+}
+
+// The algorithm is locked to RS256: a token signed with any other algorithm is rejected.
+// Throws TokenExpiredError or JsonWebTokenError if the token is not valid.
+function verifyToken(token) {
+  return jwt.verify(token, readKey('public', config.jwt.publicKeyPath), {
+    algorithms: ['RS256'],
+    issuer: TOKEN_ISSUER,
+  });
+}
+
+module.exports = {
+  encrypt, decrypt, lookupHash, contentHash,
+  hashPassword, verifyPassword, signToken, verifyToken,
+};

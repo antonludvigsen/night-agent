@@ -1,11 +1,25 @@
-// Dashboard logic with fetch() (Exercise 1, 3). Login is built in phase 2.
-// Until then the form is stopped here, so the browser never sends the fields
-// as a GET request (which would put the password in the URL and in the server logs).
+// Login with fetch() (Exercise 1, 3, 10). Email and password are sent as JSON in the body
+// of a POST request over HTTPS, never in the URL. The server answers with an HttpOnly cookie.
 const form = document.getElementById('login-form');
 const error = document.getElementById('login-error');
 
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  error.textContent = 'Login er ikke bygget endnu (fase 2).';
+  error.hidden = true;
+
+  const response = await fetch('/api/auth/login', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: form.email.value, password: form.password.value }),
+  });
+
+  if (response.ok) {
+    window.location.href = '/conversations.html';
+    return;
+  }
+  form.password.value = '';
+  error.textContent =
+    response.status === 429 ? 'For mange forsøg. Prøv igen senere.' : 'Forkert email eller password.';
   error.hidden = false;
 });
