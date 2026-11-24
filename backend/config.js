@@ -18,6 +18,12 @@ module.exports = {
     smsFrom: process.env.TWILIO_SMS_FROM,
     whatsappFrom: process.env.TWILIO_WHATSAPP_FROM,
   },
+  // Cloudinary (CDN from Exercise 4). Only used by scripts/upload-to-cdn.js.
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    apiSecret: process.env.CLOUDINARY_API_SECRET,
+  },
   ai: {
     apiKey: process.env.AI_API_KEY,
     model: process.env.AI_MODEL || 'claude-sonnet-5-5',

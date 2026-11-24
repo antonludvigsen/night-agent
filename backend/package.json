@@ -12,6 +12,7 @@
     "keys": "node scripts/generate-keys.js",
     "jwt-keys": "mkdir -p ../keys && test ! -f ../keys/jwt-private.pem && openssl genrsa -out ../keys/jwt-private.pem 2048 && openssl rsa -in ../keys/jwt-private.pem -pubout -out ../keys/jwt-public.pem && chmod 600 ../keys/jwt-private.pem && echo 'JWT keys created in keys/' || echo 'keys/jwt-private.pem already exists, left unchanged'",
     "user:create": "node scripts/create-user.js",
+    "cdn:upload": "node scripts/upload-to-cdn.js",
     "test": "node --test \"../tests/unit/*.test.js\"",
     "security:db-snapshot": "node ../tests/security/db-snapshot.js",
     "security:webhook-test": "node ../tests/security/webhook-test.js"
@@ -19,6 +20,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.11.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^18.0.10",
