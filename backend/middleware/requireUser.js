@@ -29,7 +29,7 @@ function requireUser(req, res, next) {
 // Pages (HTML): redirect to the login page.
 function requirePage(req, res, next) {
   const user = authenticate(req);
-  if (!user) return res.redirect('/');
+  if (!user) return res.redirect('/login.html');
   req.user = user;
   next();
 }

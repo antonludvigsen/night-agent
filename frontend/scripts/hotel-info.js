@@ -18,7 +18,7 @@ const render = (rows) => {
     textarea.required = true;
 
     const footer = el('div', 'info-footer');
-    const status = el('span', 'muted', `Godkendt af ${row.approved_by || 'ukendt'} · ${formatTime(row.updated_at)}`);
+    const status = el('span', 'muted', `Godkendt af ${row.approved_by || 'ukendt'}, ${formatTime(row.updated_at)}`);
     const button = el('button', null, 'Gem og godkend');
     button.type = 'submit';
     footer.append(status, button);

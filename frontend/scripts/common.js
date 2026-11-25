@@ -9,7 +9,7 @@ const api = async (path, options = {}) => {
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
   if (response.status === 401) {
-    window.location.href = '/';
+    window.location.href = '/login.html';
     throw new Error('Not logged in');
   }
   const data = response.status === 204 ? null : await response.json().catch(() => null);
@@ -40,12 +40,12 @@ const showUser = async () => {
   const userLabel = document.getElementById('user-label');
   if (!userLabel) return;
   const me = await api('/api/auth/me');
-  userLabel.textContent = `${me.hotel_name} · ${me.email}`;
+  userLabel.textContent = `${me.hotel_name}, ${me.email}`;
 };
 
 document.getElementById('logout-btn')?.addEventListener('click', async () => {
   await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-  window.location.href = '/';
+  window.location.href = '/login.html';
 });
 
 showUser().catch(() => {});

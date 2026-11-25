@@ -43,7 +43,7 @@ const render = (conversation) => {
     bubble.append(
       el('div', 'message-author', AUTHOR_LABELS[message.author]),
       el('div', 'message-body', message.body),
-      el('div', 'message-meta', `${formatTime(message.created_at)} · ${message.delivery_status || ''}`),
+      el('div', 'message-meta', `${formatTime(message.created_at)}, ${message.delivery_status || ''}`),
     );
     messagesBox.append(bubble);
   }
