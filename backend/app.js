@@ -39,7 +39,7 @@ app.use(cookieParser()); // reads the login token from the cookie
 
 // Dashboard pages are only served to a logged-in user; otherwise redirect to the login page.
 // The data itself is protected on the API (requireUser); this is defence in depth.
-const protectedPages = ['conversations.html', 'conversation.html', 'hotel-info.html', 'stats.html'];
+const protectedPages = ['dashboard.html', 'conversations.html', 'conversation.html', 'hotel-info.html', 'stats.html'];
 for (const page of protectedPages) {
   app.get(`/${page}`, requirePage, (req, res) => res.sendFile(path.join(frontendDir, page)));
 }

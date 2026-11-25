@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forside | Night Agent</title>
+  <link rel="icon" href="/public/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body class="app">
+  <header class="topbar">
+    <a class="brand" href="/dashboard.html"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><defs><mask id="mk-bar"><rect width="32" height="32" fill="#fff"/><circle cx="20.5" cy="11.5" r="7.5" fill="#000"/></mask></defs><rect width="32" height="32" rx="10" fill="currentColor"/><circle cx="16" cy="16" r="8.5" fill="#fff" mask="url(#mk-bar)"/></svg><span>Night Agent</span></a>
+    <nav>
+      <a href="/dashboard.html" aria-current="page">Forside</a>
+      <a href="/conversations.html">Samtaler</a>
+      <a href="/hotel-info.html">Hotelviden</a>
+      <a href="/stats.html">Drift</a>
+    </nav>
+    <div class="account">
+      <span id="user-label" class="muted"></span>
+      <button id="logout-btn" type="button">Log ud</button>
+    </div>
+  </header>
+  <main>
+    <div class="page-head">
+      <p class="eyebrow">Logget ind på</p>
+      <h1 id="hotel-name">Hotel</h1>
+      <p class="lead">Overblik over nattens samtaler, hotellets godkendte viden og driften af applikationen.</p>
+    </div>
+    <div class="kpi-grid">
+      <a class="kpi-card" href="/conversations.html">
+        <span class="kpi-label">Samtaler</span>
+        <strong class="kpi-value" id="k-total">-</strong>
+        <ul class="kpi-list">
+          <li><span>Kræver menneske</span><b id="k-human" class="alert-num">-</b></li>
+          <li><span>Besvaret af AI</span><b id="k-ai">-</b></li>
+          <li><span>Lukket</span><b id="k-closed">-</b></li>
+        </ul>
+      </a>
+      <a class="kpi-card" href="/hotel-info.html">
+        <span class="kpi-label">Hotelviden</span>
+        <strong class="kpi-value" id="k-info">-</strong>
+        <ul class="kpi-list">
+          <li><span>Uændret siden godkendelse</span><b id="k-intact">-</b></li>
+          <li><span>Ændret uden om dashboardet</span><b id="k-changed">-</b></li>
+          <li><span>Senest godkendt</span><b id="k-latest">-</b></li>
+        </ul>
+      </a>
+      <a class="kpi-card" href="/stats.html">
+        <span class="kpi-label">Drift</span>
+        <strong class="kpi-value" id="k-status">-</strong>
+        <ul class="kpi-list">
+          <li><span>Svartid (rundtur)</span><b id="k-rtt">-</b></li>
+          <li><span>Serverens behandlingstid</span><b id="k-server">-</b></li>
+          <li><span>Instansens oppetid</span><b id="k-uptime">-</b></li>
+        </ul>
+      </a>
+    </div>
+    <h2 class="sub-head">Kræver en medarbejder</h2>
+    <ul id="human-list" class="card-grid"></ul>
+    <p id="human-empty" class="muted empty" hidden>Ingen samtaler venter på en medarbejder.</p>
+  </main>
+  <script src="/scripts/common.js"></script>
+  <script src="/scripts/dashboard.js"></script>
+</body>
+</html>

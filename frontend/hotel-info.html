@@ -9,8 +9,9 @@
 </head>
 <body class="app">
   <header class="topbar">
-    <a class="brand" href="/conversations.html"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><defs><mask id="mk-bar"><rect width="32" height="32" fill="#fff"/><circle cx="20.5" cy="11.5" r="7.5" fill="#000"/></mask></defs><rect width="32" height="32" rx="10" fill="currentColor"/><circle cx="16" cy="16" r="8.5" fill="#fff" mask="url(#mk-bar)"/></svg><span>Night Agent</span></a>
+    <a class="brand" href="/dashboard.html"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><defs><mask id="mk-bar"><rect width="32" height="32" fill="#fff"/><circle cx="20.5" cy="11.5" r="7.5" fill="#000"/></mask></defs><rect width="32" height="32" rx="10" fill="currentColor"/><circle cx="16" cy="16" r="8.5" fill="#fff" mask="url(#mk-bar)"/></svg><span>Night Agent</span></a>
     <nav>
+      <a href="/dashboard.html">Forside</a>
       <a href="/conversations.html">Samtaler</a>
       <a href="/hotel-info.html" aria-current="page">Hotelviden</a>
       <a href="/stats.html">Drift</a>
@@ -24,10 +25,22 @@
     <div class="page-head">
       <p class="eyebrow">Godkendt viden</p>
       <h1>Hotelviden</h1>
-      <p class="lead">De godkendte tekster, AI'en svarer ud fra. Hver tekst har et SHA-256-fingeraftryk, så ændringer uden om dashboardet bliver opdaget.</p>
+      <p class="lead">De godkendte tekster, AI'en svarer ud fra. Hver tekst har et SHA-256-fingeraftryk, så ændringer uden om dashboardet bliver opdaget. Når en tekst gemmes, er den godkendt.</p>
     </div>
     <div id="hotel-info-list"></div>
   </main>
+  <dialog id="edit-dialog" class="edit-dialog">
+    <form id="edit-form">
+      <h2>Ændre hotelviden</h2>
+      <label>Titel <input id="edit-title" name="title" maxlength="60" required pattern="[\p{L}\p{N}_ \-]{1,60}" title="Bogstaver, tal, mellemrum, _ og -"></label>
+      <label>Beskrivelse <textarea id="edit-text" name="text" maxlength="1000" required></textarea></label>
+      <p id="edit-error" class="error" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" id="edit-cancel">Annuller</button>
+        <button type="submit" id="edit-save">Gem</button>
+      </div>
+    </form>
+  </dialog>
   <script src="/scripts/common.js"></script>
   <script src="/scripts/hotel-info.js"></script>
 </body>

@@ -15,7 +15,7 @@ form.addEventListener('submit', async (event) => {
   });
 
   if (response.ok) {
-    window.location.href = '/conversations.html';
+    window.location.href = '/dashboard.html';
     return;
   }
   form.password.value = '';

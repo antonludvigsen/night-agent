@@ -67,8 +67,12 @@ const replyToConversation = [
     .trim().isLength({ min: 1, max: 1000 }).withMessage('body is required and at most 1000 characters'),
   handleValidation,
 ];
+// A key is the title of a text: letters (incl. æ, ø, å), digits, spaces, _ and -, at most 60 characters.
+const HOTEL_INFO_KEY = /^[\p{L}\p{N}_ -]{1,60}$/u;
 const putHotelInfo = [
-  param('key').matches(/^[a-z0-9_]{1,50}$/).withMessage('key may only contain a-z, 0-9 and _ (at most 50 characters)'),
+  param('key').matches(HOTEL_INFO_KEY).withMessage('key may only contain letters, digits, spaces, _ and - (at most 60 characters)'),
+  body('title').optional().isString().bail().trim()
+    .matches(HOTEL_INFO_KEY).withMessage('title may only contain letters, digits, spaces, _ and - (at most 60 characters)'),
   text(body('text'), 'text is required and at most 1000 characters')
     .trim().isLength({ min: 1, max: 1000 }).withMessage('text is required and at most 1000 characters'),
   handleValidation,

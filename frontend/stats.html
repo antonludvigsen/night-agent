@@ -9,8 +9,9 @@
 </head>
 <body class="app">
   <header class="topbar">
-    <a class="brand" href="/conversations.html"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><defs><mask id="mk-bar"><rect width="32" height="32" fill="#fff"/><circle cx="20.5" cy="11.5" r="7.5" fill="#000"/></mask></defs><rect width="32" height="32" rx="10" fill="currentColor"/><circle cx="16" cy="16" r="8.5" fill="#fff" mask="url(#mk-bar)"/></svg><span>Night Agent</span></a>
+    <a class="brand" href="/dashboard.html"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><defs><mask id="mk-bar"><rect width="32" height="32" fill="#fff"/><circle cx="20.5" cy="11.5" r="7.5" fill="#000"/></mask></defs><rect width="32" height="32" rx="10" fill="currentColor"/><circle cx="16" cy="16" r="8.5" fill="#fff" mask="url(#mk-bar)"/></svg><span>Night Agent</span></a>
     <nav>
+      <a href="/dashboard.html">Forside</a>
       <a href="/conversations.html">Samtaler</a>
       <a href="/hotel-info.html">Hotelviden</a>
       <a href="/stats.html" aria-current="page">Drift</a>
@@ -24,9 +25,15 @@
     <div class="page-head">
       <p class="eyebrow">Overvågning</p>
       <h1>Drift</h1>
-      <p class="lead">Svartider, belastning og fordeling mellem instanserne.</p>
+      <p class="lead">Live målinger af <code>/health</code> hvert 5. sekund. Svartiden måles i browseren som rundtur; behandlingstiden er serverens egen <code>X-Response-Time</code>. Skiftende instans-id viser load balanceren fordele trafikken.</p>
     </div>
-    <div id="stats"><p class="muted empty">Driftstal tilføjes i fase 4.</p></div>
+    <div class="card-grid stats-grid">
+      <div class="stat-card"><span class="kpi-label">Status</span><strong class="kpi-value" id="s-status">-</strong><span class="muted" id="s-pid">Instans</span></div>
+      <div class="stat-card"><span class="kpi-label">Svartid (rundtur)</span><strong class="kpi-value" id="s-rtt">-</strong><span class="muted" id="s-server">Serverens behandlingstid</span></div>
+      <div class="stat-card"><span class="kpi-label">Oppetid</span><strong class="kpi-value" id="s-uptime">-</strong><span class="muted">For den instans, der svarede</span></div>
+    </div>
+    <h2 class="sub-head">Seneste målinger</h2>
+    <ul id="s-log" class="card-grid"></ul>
   </main>
   <script src="/scripts/common.js"></script>
   <script src="/scripts/stats.js"></script>
